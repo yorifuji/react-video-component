@@ -1,24 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import Video from './Video'
 
 function App() {
+  const [stream, setStream] = useState<MediaStream | null>(null)
+  const handleStart = () => {
+    navigator.mediaDevices.getUserMedia({video:true, audio:true}).then(stream => {
+      setStream(stream)
+    }).catch(() => console.log)
+  }
+  const handleStop = () => {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop())
+    }
+    setStream(null)
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <p>
+        <button onClick={handleStart}>start</button>
+        <button onClick={handleStop}>stop</button>
+      </p>
+      <p>
+        <Video srcObject={stream} width={320} height={240}/>
+      </p>
     </div>
   );
 }
