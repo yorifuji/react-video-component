@@ -2,17 +2,17 @@ import React, { useState } from 'react';
 import Video from './Video'
 
 function App() {
-  const [stream, setStream] = useState<MediaStream | null>(null)
+  const [streams, setStreams] = useState<MediaStream[]>([])
   const handleStart = () => {
     navigator.mediaDevices.getUserMedia({video:true, audio:true}).then(stream => {
-      setStream(stream)
+      setStreams([...streams, stream])
     }).catch(() => console.log)
   }
   const handleStop = () => {
-    if (stream) {
+    streams.forEach(stream => {
       stream.getTracks().forEach(track => track.stop())
-    }
-    setStream(null)
+    })
+    setStreams([])
   }
   return (
     <div>
@@ -21,7 +21,9 @@ function App() {
         <button onClick={handleStop}>stop</button>
       </p>
       <p>
-        <Video srcObject={stream} width={320} height={240}/>
+        {
+          streams.map((stream, index) => <Video key={index} srcObject={stream} width={320} height={240}/>)
+        }
       </p>
     </div>
   );
