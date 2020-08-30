@@ -5,7 +5,7 @@ function App() {
   const [streams, setStreams] = useState<MediaStream[]>([])
   const handleStart = () => {
     navigator.mediaDevices.getUserMedia({video:true, audio:true}).then(stream => {
-      setStreams([...streams, stream])
+      setStreams(current => [...current, stream])
     }).catch(() => console.log)
   }
   const handleStop = () => {
